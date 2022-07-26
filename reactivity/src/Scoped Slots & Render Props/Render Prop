@@ -1,0 +1,58 @@
+<html>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+<div id="app">
+  <products-list :products="products"></products-list>
+  <products-list :products="products" :product-renderer="imageRenderer"></products-list>
+</div>
+
+<script>
+  Vue.component('products-list', {
+    props: {
+      products: {
+        type: Array,
+        required: true
+      },
+      productRenderer: {  // <-- Here's our new prop
+        type: Function,
+        default (h, product) { // <-- By default just print the name
+          return product.name
+        }
+      }
+    },
+    render(h) {
+      return h('ul', [
+        this.products.map(product =>
+          h('li', [this.productRenderer(h, product)]) // use our new prop
+        )
+      ])
+    }
+  })
+  new Vue({
+    el: '#app',
+    data: {
+      products: [{
+        name: 'Magnifying Glass',
+        image: 'https://photos-1.dropbox.com/t/2/AABWUQsD6EEczvvwA4P6QhM1u6YsLosvyLrFZfR67S6zIg/12/35866/png/32x32/1/_/1/2/magnify.png/EPjXIRi15qXLBCAHKAc/iaxDONz3l82h9-vd255QH_4wlvu7T9gd4c5DEqxjFzw?preserve_transparency=1&size=2048x1536&size_mode=3'
+      }, {
+        name: 'Light Bulb',
+        image: 'https://photos-2.dropbox.com/t/2/AABVhP66aRQHZz0Q6QRJmITxqx0DUln5QMd7KNr9672oGw/12/35866/png/32x32/1/_/1/2/bulb.png/EPjXIRi15qXLBCAHKAc/RyH8on6nKhiAcUUsZu3t-hb1XWgT89T6wEqxXk6n36g?preserve_transparency=1&size=2048x1536&size_mode=3'
+      }],
+      imageRenderer(h, product) { // <-- The imageRenderer I'm passing in
+        return [
+          h('img', {
+            attrs: {
+              src: product.image
+            }
+          }),
+          ' ',
+          product.name.toUpperCase()
+        ]
+      }
+    }
+  })
+</script>
+
+
+</html>
